@@ -1,0 +1,236 @@
+{{ define "admin/users.html"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+	<title>图书管理系统</title>
+
+	<!-- Bootstrap -->
+	<link type="text/css" rel="stylesheet" href="{{ level .num }}static/css/bootstrap.min.css" />
+
+	<!-- Slick -->
+	<link type="text/css" rel="stylesheet" href="{{ level .num }}static/css/slick.css" />
+	<link type="text/css" rel="stylesheet" href="{{ level .num }}static/css/slick-theme.css" />
+
+	<!-- nouislider -->
+	<link type="text/css" rel="stylesheet" href="{{ level .num }}static/css/nouislider.min.css" />
+
+	<!-- Font Awesome Icon -->
+	<link rel="stylesheet" href="{{ level .num }}static/css/font-awesome.min.css">
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="{{ level .num }}static/css/style.css" />
+	<style>
+		input {
+			border: none;
+		}
+
+		#showtable input {
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- HEADER -->
+	<header>
+		<!-- TOP HEADER -->
+		<div id="top-header">
+			<div class="container">
+				<!-- <ul class="header-links pull-left">
+						<li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+						<li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+					</ul> -->
+				<ul class="header-links pull-right">
+					<li><a href="#"><i class="fa fa-user-o"></i> 我的账户</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- /TOP HEADER -->
+
+		<!-- MAIN HEADER -->
+		<div id="header">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<!-- LOGO -->
+					<div class="col-md-3">
+						<div class="header-logo">
+							<a href="#" class="logo">
+								<img src="{{ level .num }}static/img/logo.png" width="120px" alt="">
+							</a>
+						</div>
+					</div>
+					<!-- /LOGO -->
+
+					<!-- SEARCH BAR -->
+					<div class="col-md-6">
+						<div class="header-search">
+							<form action="/admin/search" method="post">
+								<select class="input-select" id="search_select" name="search_select">
+									<!-- <option value="0">全部</option> -->
+									<option value="1">书本</option>
+									<option value="2">用户</option>
+									<option value="3">记录</option>
+								</select>
+								<input class="input" id="search_input" name="search_input" placeholder="Search here">
+								<button class="search-btn" id="search_but">搜索</button>
+							</form>
+						</div>
+					</div>
+					<!-- /SEARCH BAR -->
+
+
+				</div>
+				<!-- row -->
+			</div>
+			<!-- container -->
+		</div>
+		<!-- /MAIN HEADER -->
+	</header>
+	<!-- /HEADER -->
+
+	<!-- NAVIGATION -->
+	<nav id="navigation">
+		<!-- container -->
+		<div class="container">
+			<!-- responsive-nav -->
+			<div id="responsive-nav">
+				<!-- NAV -->
+				<ul class="main-nav nav navbar-nav">
+					<li><a href="/admin/index">管理员</a></li>
+					<li><a href="/admin/books">图书管理</a></li>
+					<li class="active"><a href="#">用户管理</a></li>
+					<li><a href="/admin/record">借阅归还</a></li>
+				</ul>
+				<!-- /NAV -->
+			</div>
+			<!-- /responsive-nav -->
+		</div>
+		<!-- /container -->
+	</nav>
+	<!-- /NAVIGATION -->
+
+	<!-- BREADCRUMB -->
+	<div id="breadcrumb" class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-12">
+					<h3 class="breadcrumb-header">管理员</h3>
+					<ul class="breadcrumb-tree">
+						<li><a href="#">所有用户</a></li>
+						<li class="active"><a href="#"  id="slideToggle_but">添加用户</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /BREADCRUMB -->
+	{{/* 嵌套一个define定义的模板 */}}
+	{{ template "add.html"}}
+	<div class="container">
+		<!-- row -->
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-bordered table-hover ">					
+					<thead>
+						<tr>
+							<th style="text-align: center;">序号</th>
+							<th style="text-align: center;">用户id</th>
+							<th style="text-align: center;">用户名</th>
+							<th style="text-align: center;">密码</th>
+							<th style="text-align: center;">书id</th>
+							<th style="text-align: center;">用户信誉</th>
+							<th style="text-align: center; color: green;"><i class="fa fa-trash"></i></th>
+						</tr>
+					</thead>
+					<tbody id="showtable">
+						{{ with .data }}
+						{{ range $ind, $value := . }}
+						{{/* 通过id取ind(即真正的用户id) */}}
+						<tr ind="{{ .ID }}">	
+							<td><input type="text"  value="{{ $ind }}" readonly></td>
+							<td><input type="number" flag="id" value="{{ $value.ID }}" name="id"></td>
+							<td><input type="text" flag="username" value="{{ $value.Username }}" name="username"></td>
+							<td><input type="text" flag="password" value="{{ $value.Password }}" name="password"></td>
+							<td><input type="number" flag="book_id" value="{{ $value.Book_id }}" name="book_id"></td>
+							<td><input type="number" flag="reputation" value="{{ $value.Reputation }}" name="reputation"></td>
+							<td><input type="button" value="删除" onclick="func_users_delete(this)"></td>
+						</tr>
+						{{ end }}
+						{{ end }}
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+	<div style="height: 300px;">{{/* 撑架子*/}}</div>
+	<!-- FOOTER -->
+	<footer id="footer">
+		<!-- top footer -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /top footer -->
+	</footer>
+
+	<!-- jQuery Plugins -->
+	<script src="{{ level .num }}static/js/jquery.min.js"></script>
+	<script src="{{ level .num }}static/js/bootstrap.min.js"></script>
+	<script src="{{ level .num }}static/js/slick.min.js"></script>
+	<script src="{{ level .num }}static/js/nouislider.min.js"></script>
+	<script src="{{ level .num }}static/js/jquery.zoom.min.js"></script>
+	<script src="{{ level .num }}static/js/main.js"></script>
+
+	<script src="{{ level .num }}static/myJs/users_record.js"></script>
+
+</body>
+
+</html>
+{{ end }}
+
+
+{{/* 通过define定义一个模板 */}}
+{{ define "add.html" }}
+<div class="col-md-4"></div>
+	<div class="col-md-4">
+		<div id="slideToggle_div" style="display: none;">
+			<table class="table table-bordered table-hover ">
+				<tbody>
+					<form action="/admin/users/add" method="post">
+						<tr>
+							<td><label for="userid">用户id</label></td>
+							<td><input type="number" name="id" id="userid" value="" ></td>
+						</tr>
+						<tr>
+							<td><label for="username">用户名</label></td>
+							<td><input type="text" name="username" id="username" value=""></td>
+						</tr>
+						<tr>
+							<td> <label for="userpass">用户密码</label> </td>
+							<td><input type="text" name="password" id="userpass" value=""></td>
+						</tr>
+						<tr>
+							<td colspan="2"><input type="submit" value="添加用户"></td>
+						</tr>
+					</form>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="col-md-4"></div>
+{{ end }}

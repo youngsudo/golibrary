@@ -1,0 +1,207 @@
+{{ define "admin/books.html"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+	<title>图书管理系统</title>
+
+	<!-- Bootstrap -->
+	<link type="text/css" rel="stylesheet" href="{{ level .num }}static/css/bootstrap.min.css" />
+
+	<!-- Slick -->
+	<link type="text/css" rel="stylesheet" href="{{ level .num }}static/css/slick.css" />
+	<link type="text/css" rel="stylesheet" href="{{ level .num }}static/css/slick-theme.css" />
+
+	<!-- nouislider -->
+	<link type="text/css" rel="stylesheet" href="{{ level .num }}static/css/nouislider.min.css" />
+
+	<!-- Font Awesome Icon -->
+	<link rel="stylesheet" href="{{ level .num }}static/css/font-awesome.min.css">
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="{{ level .num }}static/css/style.css" />
+
+</head>
+
+<body>
+	<!-- HEADER -->
+	<header>
+		<!-- TOP HEADER -->
+		<div id="top-header">
+			<div class="container">
+				<!-- <ul class="header-links pull-left">
+						<li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+						<li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+					</ul> -->
+				<ul class="header-links pull-right">
+					<li><a href="#"><i class="fa fa-user-o"></i> 我的账户</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- /TOP HEADER -->
+
+		<!-- MAIN HEADER -->
+		<div id="header">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<!-- LOGO -->
+					<div class="col-md-3">
+						<div class="header-logo">
+							<a href="#" class="logo">
+								<img src="{{ level .num }}{{ level .num }}static/img/logo.png" width="120px" alt="">
+							</a>
+						</div>
+					</div>
+					<!-- /LOGO -->
+					<!-- SEARCH BAR -->
+					<div class="col-md-6">
+						<div class="header-search">
+							<form action="/admin/search" method="post">
+								<select class="input-select" id="search_select" name="search_select">
+									<!-- <option value="0">全部</option> -->
+									<option value="1">书本</option>
+									<option value="2">用户</option>
+									<option value="3">记录</option>
+								</select>
+								<input class="input" id="search_input" name="search_input" placeholder="Search here">
+								<button class="search-btn" id="search_but">搜索</button>
+							</form>
+						</div>
+					</div>
+					<!-- /SEARCH BAR -->
+
+
+				</div>
+				<!-- row -->
+			</div>
+			<!-- container -->
+		</div>
+		<!-- /MAIN HEADER -->
+	</header>
+	<!-- /HEADER -->
+	<!-- NAVIGATION 网站导航 -->
+	<nav id="navigation">
+		<!-- container -->
+		<div class="container">
+			<!-- responsive-nav -->
+			<div id="responsive-nav">
+				<!-- NAV -->
+				<ul class="main-nav nav navbar-nav">
+					<li><a href="/admin/index">管理员</a></li>
+					<li class="active"><a href="#">图书管理</a></li>
+					<li><a href="/admin/users">用户管理</a></li>
+					<li><a href="/admin/record">借阅归还</a></li>
+				</ul>
+				<!-- /NAV -->
+			</div>
+			<!-- /responsive-nav -->
+		</div>
+		<!-- /container -->
+	</nav>
+	<!-- /NAVIGATION -->
+
+	<!-- BREADCRUMB -->
+	<div id="breadcrumb" class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-12">
+					<h3 class="breadcrumb-header">管理员</h3>
+					<ul class="breadcrumb-tree">
+						<li><a href="/admin/books">全部图书</a></li>
+						<li class="active"><a href="/admin/books/add">添加图书</a></li>
+						<li class="active"><a href="#">图书详情</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /BREADCRUMB -->
+
+	<!-- SECTION -->
+	<div class="section">
+		<!-- container -->
+		<div class="container">
+			<div class="row">
+				<div id="aside" class="col-md-1"></div>
+
+				<div id="aside" class="col-md-10">
+					{{ with .data }}
+					{{range $ind, $value := . }}
+					<div class="col-md-3 col-xs-6">
+						<div class="product" ind="{{ $ind }}">
+							<div class="product-img">
+								<img src="../static{{ noImg $value.Picture }}" alt="没有图片">
+								<div class="product-label">
+									<span class="sale" style="color: black;">{{ stated $value.State }}</span>
+									<!-- <span class="new">是否借出</span> -->
+								</div>
+							</div>
+							<div class="product-body" id="book_{{ $value.ID }}" ind="{{ $value.ID }}">
+								<input type="hidden" value=" ">
+								<h3 class="product-name">书名:{{ $value.Title }}</h3>
+								<p class="product-category">作者:{{ $value.Author }}</p>
+								<div class="product-btns">
+									<button class="quick-view" onclick="bookDetails_but(this)"><i
+											class="fa fa-eye"></i><span class="tooltipp">图书详情</span></button>
+									<button class="quick-view" onclick="delete_but(this)"><i
+											class="fa fa-trash"></i><span class="tooltipp">删除图书</span></button>
+								</div>
+							</div>
+							<!-- <div class="add-to-cart">
+								<button class="add-to-cart-btn" onclick="bookDetails_but(this)"><i class="fa fa-eye"></i> 图书详情</button>
+							</div> -->
+						</div>
+					</div>
+					{{ end }}
+					{{ end }}
+					<!-- product 在body_product后面 $("#body_product").append()-->
+					<!-- <div id="body_product">
+						
+					</div> -->
+					<!-- /product -->
+				</div>
+				<div id="aside" class="col-md-1"></div>
+
+			</div>
+		</div>
+	</div>
+	<!-- /SECTION -->
+	<div style="height: 300px;">{{/* 撑架子*/}}</div>
+	<!-- FOOTER -->
+	<footer id="footer">
+		<!-- top footer -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /top footer -->
+	</footer>
+
+	<!-- jQuery Plugins -->
+	<script src="{{ level .num }}static/js/jquery.min.js"></script>
+	<script src="{{ level .num }}static/js/bootstrap.min.js"></script>
+	<script src="{{ level .num }}static/js/slick.min.js"></script>
+	<script src="{{ level .num }}static/js/nouislider.min.js"></script>
+	<script src="{{ level .num }}static/js/jquery.zoom.min.js"></script>
+	<script src="{{ level .num }}static/js/main.js"></script>
+	<!--  我的js -->
+	<script src="{{ level .num }}static/myJs/books.js"></script>
+
+</body>
+
+</html>
+
+{{ end }}
